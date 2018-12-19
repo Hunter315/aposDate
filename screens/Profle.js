@@ -20,5 +20,10 @@ class Profile extends React.Component {
         )
     }
 }
-
-export default Profile;
+function mapStateToProps(state) {
+    return {
+      loggedIn: state.loggedIn
+    };
+  }
+  
+  export default connect(mapStateToProps)(Profile);

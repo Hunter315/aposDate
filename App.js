@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './styles.js';
-import RootNavigator from './navigation/RootNavigator';
+import Login from './screens/Login.js'; 
 import reducers from './redux/reducers.js';
 import thunkMiddleware from 'redux-thunk';
 import { Provider } from 'react-redux';
@@ -12,7 +12,7 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <RootNavigator/>
+        <Login/>
       </Provider>
         
     );
