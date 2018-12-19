@@ -29,6 +29,5 @@ export function login(user) {
               dispatch({ type: 'LOGIN', user: params, loggedIn: true });
             }
           })
-          dispatch({ type: 'LOGIN', user: user, loggedIn: true})
     }
   }
