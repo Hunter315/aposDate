@@ -38,7 +38,6 @@ export default TabNavigator(
       style: {
         marginTop: 25,
         height: 40,
-
         backgroundColor: "#555"
       }
     }

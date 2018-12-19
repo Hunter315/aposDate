@@ -10,6 +10,7 @@ const RootStackNavigator = createStackNavigator(
     }
 );
 
+//MY main app container that react will render
 const AppContainer = createAppContainer(RootStackNavigator);
 
 export default class RootNavigator extends React.Component {
