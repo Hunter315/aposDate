@@ -7,3 +7,5 @@ npm-debug.*
 *.mobileprovision
 
 todo.md
+
+config/*
