@@ -32,10 +32,11 @@ export default TabNavigator(
     tabBarPosition: "top",
     initialRouteName: "Home",
     animationEnabled: true,
-    swipeEnabled: false,
+    swipeEnabled: true,
     tabBarOptions: {
       upperCaseLabel: false,
       style: {
+        marginTop: 25,
         height: 40,
 
         backgroundColor: "#555"
