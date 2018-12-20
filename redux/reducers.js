@@ -23,6 +23,9 @@ export default reducers = (state = {
             //grab entire state, find user item, and update it with action.payload
             return {...state, user: action.user, loggedIn: action.loggedIn }
         }
+        case 'UPLOAD_IMAGES': {
+            return {...state, user: {...state.user, images: action.payload } }
+        }
     }
     return state;
 }
