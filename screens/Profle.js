@@ -1,7 +1,13 @@
 import React from "react";
 import styles from "../styles";
 import { connect } from "react-redux";
-import { uploadImages } from "../redux/actions";
+import { Ionicons } from "@expo/vector-icons";
+import {
+  uploadImages,
+  deleteImage,
+  updateAbout,
+  logout
+} from "../redux/actions";
 
 import {
   Text,
@@ -25,11 +31,11 @@ class Profile extends React.Component {
 
   render() {
     return (
-      <ScrollView>
-        <View style={[styles.container, styles.center]}>
+      <ScrollView style={styles.backgroundColor}>
+        <View style={[styles.container, styles.center, styles.backgroundColor]}>
           <View style={styles.container}>
             <Image
-              style={StyleSheet.img}
+              style={styles.img}
               source={{ uri: this.props.user.photoUrl }}
             />
             <Text style={[styles.center, styles.bold]}>
@@ -40,15 +46,32 @@ class Profile extends React.Component {
             {this.props.user.images.map((uri, key) => {
               return (
                 <TouchableOpacity
-                  key={{ key }}
+                  key={ key }
                   onPress={this.deleteImage.bind({ self: this, key: key })}
                 >
                   <Image style={styles.img} source={{ uri: uri }} />
                 </TouchableOpacity>
               );
             })}
+            <TouchableOpacity
+              style={[styles.img, styles.center]}
+              onPress={this.addImage.bind(this)}
+            >
+              <Ionicons name="ios-add" size={75} style={styles.color} />
+            </TouchableOpacity>
           </View>
+          <Text style={styles.bold}>About</Text>
+          <TextInput
+            style={styles.textInput}
+            multiline={true}
+            numberOfLines={5}
+            onChangeText={text => this.props.dispatch(updateAbout(text))}
+            value={this.props.user.aboutMe}
+          />
         </View>
+        <TouchableOpacity onPress={() => this.props.dispatch(logout())}>
+          <Text style={styles.button}>Logout</Text>
+        </TouchableOpacity>
       </ScrollView>
     );
   }
