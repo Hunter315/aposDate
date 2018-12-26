@@ -3,6 +3,7 @@ import * as firebase from "firebase";
 import aws from "../config/aws.js";
 import { ImagePicker } from "expo";
 import { RNS3 } from "react-native-aws3";
+import { Alert } from 'react-native';
 
 export function login(user) {
   return function(dispatch) {
@@ -77,8 +78,11 @@ export function uploadImages(images) {
               .ref("cards/" + firebase.auth().currentUser.uid + "/images")
               .set(array);
             dispatch({ type: "UPLOAD_IMAGES", payload: array });
+            
           }
-        });
+        }).catch(error => {
+          console.log("AWS error==================" + error)
+          Alert.alert(error)});
       }
     });
   };
@@ -110,4 +114,18 @@ export function updateAbout(value){
             firebase.database().ref('cards/' +firebase.auth().currentUser.uid).update({ aboutMe: value});
         }, 3000);
     }
+}
+
+export function getCards(){
+  return function(dispatch){
+    firebase.database().ref('cards').once('value', (snap) => {
+      var items = [];
+      snap.forEach((child) => {
+        item = child.val();
+        item.id = child.key;
+        items.push(item);
+      });
+      dispatch({ type: 'GET_CARDS', payload: items });
+    })
+  }
 }

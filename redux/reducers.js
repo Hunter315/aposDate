@@ -2,6 +2,7 @@
 
 export default reducers = (state = {
     loggedIn: false,
+    cards: [],
     user: {
         id: '',
         photoUrl: '',
@@ -31,6 +32,9 @@ export default reducers = (state = {
         }
         case 'UPDATE_ABOUT': {
             return {...state, user: {...state.user, aboutMe: action.payload } }
+        }
+        case 'GET_CARDS': {
+            return {...state, cards: action.payload }
         }
        
     }

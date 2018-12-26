@@ -10,9 +10,7 @@ firebase.initializeApp(firebaseConfig);
 import { Text, View, Alert, TouchableOpacity } from "react-native";
 console.disableYellowBox = true; 
 class Login extends React.Component {
-  state = {
-      
-  };
+  
   
   componentWillMount() {
     firebase.auth().onAuthStateChanged((user) => {
@@ -48,6 +46,7 @@ class Login extends React.Component {
         .catch(error => {
           //Error handling here
           Alert.alert("There was a problem signing you in");
+          
         });
     }
   };
@@ -56,9 +55,9 @@ class Login extends React.Component {
       return <RootNavigator />;
     } else {
       return (
-        <View style={styles.container}>
-            <TouchableOpacity onPress={this.login.bind(this)}>
-                <Text>{this.props.loggedIn}</Text>
+        <View style={[styles.container, styles.center]}>
+            <TouchableOpacity style={styles.button} onPress={this.login.bind(this)}>
+                <Text>Login</Text>
             </TouchableOpacity>
         </View>
       );

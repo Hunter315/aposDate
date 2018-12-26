@@ -18,6 +18,8 @@ import {
   ScrollView
 } from "react-native";
 
+
+
 class Profile extends React.Component {
   deleteImage() {
     this.self.props.dispatch(
@@ -27,6 +29,34 @@ class Profile extends React.Component {
 
   addImage() {
     this.props.dispatch(uploadImages(this.props.user.images));
+  }
+
+
+  imageMap() {
+
+    if (this.props.user.images != undefined){
+      {this.props.user.images.map((uri, key) => {
+        return (
+          <TouchableOpacity
+            key={ key }
+            onPress={this.deleteImage.bind({ self: this, key: key })}
+          >
+            <Image style={styles.img} source={{ uri: uri }} />
+          </TouchableOpacity>
+        );
+      })}
+  
+    } else {
+      return(
+        <TouchableOpacity
+        style={[styles.img, styles.center]}
+        onPress={this.addImage.bind(this)}
+      >
+        <Ionicons name="ios-add" size={75} style={styles.color} />
+      </TouchableOpacity>
+      )
+    }
+    
   }
 
   render() {
@@ -43,16 +73,16 @@ class Profile extends React.Component {
             </Text>
           </View>
           <View style={styles.imgRow}>
-            {this.props.user.images.map((uri, key) => {
-              return (
-                <TouchableOpacity
-                  key={ key }
-                  onPress={this.deleteImage.bind({ self: this, key: key })}
-                >
-                  <Image style={styles.img} source={{ uri: uri }} />
-                </TouchableOpacity>
-              );
-            })}
+            
+            {this.imageMap()}
+            
+            
+
+            
+
+
+            
+
             <TouchableOpacity
               style={[styles.img, styles.center]}
               onPress={this.addImage.bind(this)}
