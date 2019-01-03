@@ -1,6 +1,6 @@
 //===========BASIC LOGIN FUNCTION==========
 import * as firebase from "firebase";
-import aws from "../config/aws.js";
+import aws from "../config/cloud.js";
 import { ImagePicker } from "expo";
 import { RNS3 } from "react-native-aws3";
 import { Alert } from 'react-native';
@@ -21,7 +21,7 @@ export function login(user) {
       swipes: {
         [user.uid]: false
       },
-      token: ""
+      token: " "
     };
 
     firebase
@@ -50,9 +50,9 @@ export function logout() {
 
 export function uploadImages(images) {
   return function(dispatch) {
-    ImagePicker.launchImageLibraryAsync({ allowsEditing: false }).then(function(
-      result
-    ) {
+    ImagePicker.launchImageLibraryAsync({ allowsEditing: false })
+      .then(function(result) {
+        console.log("========MY RESULT=====" + JSON.stringify(result));
       var array = images;
       if (result.uri != undefined) {
         const file = {
@@ -60,29 +60,39 @@ export function uploadImages(images) {
           name: result.uri,
           type: "image/png"
         };
-
+        console.log("This is file:  ")
+        console.log(JSON.stringify(file))
         const options = {
-          keyPrefix: "uploads/",
+          keyPrefix: "images/",
           bucket: "aposdate",
-          region: "us-west", //this may be incorrect
+          region: "us-west-1", //this may be incorrect
           accessKey: aws.accessKey,
           secretKey: aws.secretKey,
           successActionStatus: 201
         };
 
-        RNS3.put(file, options).then(function(response) {
-          if (response.status === 201) {
+        RNS3.put(file, options).then(response => {
+          // console.log(response);
+          if (response.status !== 201) { 
+            console.log("===========MY RNS3 RESPONSE======= ");
+            console.log(JSON.stringify(response));
+
+            
+            
+          } else{
+            
             array.push(response.body.postResponse.location);
             firebase
               .database()
               .ref("cards/" + firebase.auth().currentUser.uid + "/images")
               .set(array);
             dispatch({ type: "UPLOAD_IMAGES", payload: array });
-            
           }
-        }).catch(error => {
-          console.log("AWS error==================" + error)
-          Alert.alert(error)});
+        })
+        
+      } else {
+        console.log("=====RESULT.URI=====" + result.uri);
+        console.log("result.uri may be undefined");
       }
     });
   };
@@ -111,7 +121,7 @@ export function updateAbout(value){
     return function(dispatch){
         dispatch({ type: 'UPDATE_ABOUT', payload: value });
         setTimeout(function(){
-            firebase.database().ref('cards/' +firebase.auth().currentUser.uid).update({ aboutMe: value});
+            firebase.database().ref('cards/' + firebase.auth().currentUser.uid).update({ aboutMe: value});
         }, 3000);
     }
 }

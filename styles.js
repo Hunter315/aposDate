@@ -54,6 +54,21 @@ var styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+    card: {
+        width: deviceWidth*.9,
+        height: deviceHeight*.7,
+        borderRadius: 50,
+    },
+    cardDescription: {
+        padding: 15,
+        justifyContent: 'flex-end',
+        flex:1
+    },
+    cardInfo: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 10,
+    },
 
 })
 

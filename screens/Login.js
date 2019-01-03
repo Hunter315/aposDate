@@ -8,14 +8,16 @@ import firebaseConfig from "../config/firebase.js";
 firebase.initializeApp(firebaseConfig);
 
 import { Text, View, Alert, TouchableOpacity } from "react-native";
-console.disableYellowBox = true; 
+// console.disableYellowBox = true; 
 class Login extends React.Component {
-  
+  state = {}
   
   componentWillMount() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user != null) {
         this.props.dispatch(login(user));
+      } else {
+        console.log('try something else here')
       }
     });
 
@@ -27,12 +29,10 @@ class Login extends React.Component {
     const {
       type,
       token,
-      expires,
-      permissions,
-      declinedPermissions
     } = await Expo.Facebook.logInWithReadPermissionsAsync("636098266793076", {
       permissions: ["public_profile"]
     });
+    console.log(type)
     if (type === "success") {
       //Build firebase credential with facebook access token
       const credential = await firebase.auth.FacebookAuthProvider.credential(

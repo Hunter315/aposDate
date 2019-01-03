@@ -1,89 +1,79 @@
 import React from 'react';
 import styles from '../styles'
+import * as firebase from 'firebase';
 import { connect } from 'react-redux';
-import { getCards } from '../redux/actions';
-import SwipeCards from 'react-native-swipe-cards';
+import { getCards } from '../redux/actions'
+import SwipeCards from 'react-native-swipe-cards'
+import Cards from '../components/Cards.js'
+import NoCards from '../components/NoCards.js'
 
-
-import {
-    Text,
-    View,
-    Alert,
-    Image
+import { 
+  Text, 
+  View,
+  Image
 } from 'react-native';
 
-class Card extends React.Component {
-    render() {
-        return(
-            <View>
-                <Image source={{uri: this.props.images[0]}} />
-                <Text>{this.props.name}</Text>
-            </View>
-        )
-    }
-}
-
-class NoMoreCards extends React.Component {
-    render() {
-        return(
-            <View>
-                <Text>No more cards...</Text>
-            </View>
-        )
-    }
-}
 class Home extends React.Component {
-    state = {
-        cards: [
-            {name: 'male 1'},
-            {name: 'female 1'}
-        ]
-    }
 
-handleYup (card) {
-    console.log(`Yup for ${card.name}`)
-}
+  componentWillMount(){
+    this.props.dispatch(getCards())
+  }
+  // componentDidMount(){
+  //   console.log(this.props)
+  // }
 
-handleNope (card) {
-    console.log(`Nope for ${card.name}`)
-}
+  handleYup (card) {
+    firebase.database().ref('cards/' + this.props.user.id + '/swipes').update({ [card.id]: true });
+    this.checkMatch(card)
+  }
 
-handleMaybe (card) {
-    console.log(`Maybe for ${card.name}`)
-}
+  handleNope (card) {
+    firebase.database().ref('cards/' + this.props.user.id + '/swipes').update({ [card.id]: false });
+  }
 
+  checkMatch(card){
+    firebase.database().ref('cards/' + card.id + '/swipes/' + this.props.user.id).once('value', (snap) => {
+      if(snap.val() == true){
+        var me = {
+          id: this.props.user.id,
+          photoUrl: this.props.user.photoUrl,
+          name: this.props.user.name
+        }
+        var user = {
+          id: card.id,
+          photoUrl: card.photoUrl,
+          name: card.name
+        }
+        firebase.database().ref('cards/' + this.props.user.id + '/chats/' + card.id).set({user: user});
+        firebase.database().ref('cards/' + card.id + '/chats/' + this.props.user.id).set({user: me});
+      }
+    });
+  }
 
-
-
-
-    componentWillMount() {
-     this.props.dispatch(getCards());
-    }
-    
+  render() {
+    return (
       
-
-    render() {
-        return(
-            <SwipeCards
-                cards={this.props.cards}
-                stacks={false}
-                renderCard={(cardData) => <Card {...cardData} />}
-                renderNoMoreCards={() => <NoMoreCards />}
-                showYup={false}
-                showNope={false}
-                handleYup={this.handleYup}
-                handleNope={this.handleNope}
-                handleMaybe={this.handleMaybe}
-                hasMaybeAction={false} />
-        )
-    }
+      // <SwipeCards
+      //   cards={this.props.cards}
+      //   stack={false}
+      //   renderCard={(cardData) => <Cards {...cardData} />}
+      //   renderNoMoreCards={() => <NoCards />}
+      //   showYup={false}
+      //   showNope={false}
+      //   handleYup={this.handleYup.bind(this)}
+      //   handleNope={this.handleNope.bind(this)}
+      //   handleMaybe={this.handleMaybe}
+      //   hasMaybeAction={false}/>
+       <Text>filler</Text>
+    )
+  }
 }
 
 function mapStateToProps(state) {
-    return { 
-        loggedIn: state.loggedIn,
-        cards: state.cards
-    };
+  return {
+    cards: state.cards,
+    user: state.user
+  };
 }
 
 export default connect(mapStateToProps)(Home);
