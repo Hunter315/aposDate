@@ -53,18 +53,18 @@ class Home extends React.Component {
   render() {
     return (
       
-      // <SwipeCards
-      //   cards={this.props.cards}
-      //   stack={false}
-      //   renderCard={(cardData) => <Cards {...cardData} />}
-      //   renderNoMoreCards={() => <NoCards />}
-      //   showYup={false}
-      //   showNope={false}
-      //   handleYup={this.handleYup.bind(this)}
-      //   handleNope={this.handleNope.bind(this)}
-      //   handleMaybe={this.handleMaybe}
-      //   hasMaybeAction={false}/>
-       <Text>filler</Text>
+      <SwipeCards
+        cards={this.props.cards}
+        stack={false}
+        renderCard={(cardData) => <Cards {...cardData} />}
+        renderNoMoreCards={() => <NoCards />}
+        showYup={false}
+        showNope={false}
+        handleYup={this.handleYup.bind(this)}
+        handleNope={this.handleNope.bind(this)}
+        handleMaybe={this.handleMaybe}
+        hasMaybeAction={false}/>
+       
     )
   }
 }
