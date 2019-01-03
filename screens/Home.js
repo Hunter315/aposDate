@@ -16,7 +16,7 @@ import {
 class Home extends React.Component {
 
   componentWillMount(){
-    this.props.dispatch(getCards())
+    this.props.dispatch(getCards(this.props.user.geocode))
   }
   // componentDidMount(){
   //   console.log(this.props)

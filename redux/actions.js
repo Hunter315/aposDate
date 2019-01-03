@@ -1,9 +1,11 @@
 //===========BASIC LOGIN FUNCTION==========
 import * as firebase from "firebase";
 import aws from "../config/cloud.js";
-import { ImagePicker } from "expo";
+import { ImagePicker, Notifications } from "expo";
 import { RNS3 } from "react-native-aws3";
 import { Alert } from 'react-native';
+import Geohash from 'latlon-geohash';
+import { Location, Permissions } from 'expo';
 
 export function login(user) {
   return function(dispatch) {
@@ -31,6 +33,7 @@ export function login(user) {
       .once("value", function(snapshot) {
         if (snapshot.val() !== null) {
           dispatch({ type: "LOGIN", user: snapshot.val(), loggedIn: true });
+          dispatch(allowNotifications())
         } else {
           firebase
             .database()
@@ -38,6 +41,7 @@ export function login(user) {
             .update(params);
           dispatch({ type: "LOGIN", user: params, loggedIn: true });
         }
+        dispatch(getLocation())
       });
   };
 }
@@ -126,9 +130,9 @@ export function updateAbout(value){
     }
 }
 
-export function getCards(){
+export function getCards(geocode){
   return function(dispatch){
-    firebase.database().ref('cards').once('value', (snap) => {
+    firebase.database().ref('cards').orderByChild("geocode").equalTo(geocode).once('value', (snap) => {
       var items = [];
       snap.forEach((child) => {
         item = child.val();
@@ -137,5 +141,54 @@ export function getCards(){
       });
       dispatch({ type: 'GET_CARDS', payload: items });
     })
+  }
+}
+
+export function getLocation(){
+  return function(dispatch){
+    Permissions.askAsync(Permissions.LOCATION).then(function(result){
+      if(result) {
+        Location.getCurrentPositionAsync({}).then(function(location){
+          var geocode = Geohash.encode(location.coords.latitude, location.coords.longitude, 4)
+          firebase.database().ref('cards/' + firebase.auth().currentUser.uid).update({geocode: geocode});
+          dispatch({ type: 'GET_LOCATION', payload: geocode });
+        })
+      }
+    })
+  }
+}
+
+export function allowNotifications(){
+  return function(dispatch){
+  Permissions.getAsync(Permissions.NOTIFICATIONS).then(function(result){
+    if (result.status === 'granted'){
+      Notifications.getExpoPushTokenAsync().then(function(token){
+        firebase.database().ref('cards/' + firebase.auth().currentUser.uid).update({ token: token });
+        dispatch({ type: 'ALLOW_NOTIFICATIONS', payload: token });
+      })
+    }
+  })
+
+  }
+}
+
+export function sendNotification(id, name, text){
+  return function(dispatch){
+    firebase.database().ref('cards/' + id).once('value', (snap) => {
+      if(snap.val().token != null){
+        return fetch('https://exp.host/--api/v2/push/send', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: snap.val().token,
+            title: name,
+            body: text,
+          }),
+        });
+      }
+    });
   }
 }
