@@ -2,6 +2,7 @@ import React from 'react';
 import { createAppContainer, createStackNavigator } from 'react-navigation';
 import TabNavigator from './TabNavigator.js';
 import Chat from '../screens/Chat';
+import Settings from '../screens/Settings'
 
 const RootStackNavigator = createStackNavigator(
     {
@@ -11,6 +12,9 @@ const RootStackNavigator = createStackNavigator(
         Chat: {
             screen: Chat,
           },
+        Settings: {
+            screen: Settings,
+        },
     }
 );
 

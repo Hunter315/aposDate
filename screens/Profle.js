@@ -2,7 +2,8 @@ import React from 'react';
 import styles from '../styles'
 import { connect } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
-import { uploadImages, deleteImage, updateAbout, logout } from '../redux/actions'
+import { uploadImages, deleteImage, updateAbout, logout } from '../redux/actions';
+import Settings from './Settings.js';
 
 import { 
   Text, 
@@ -43,6 +44,8 @@ class Profile extends React.Component {
               <Ionicons name="ios-add" size={75}  style={styles.color} />
             </TouchableOpacity>
           </View>
+
+          {/* About Me */}
           <Text style={styles.bold}>About</Text>
           <TextInput
             style={styles.textInput}
@@ -51,9 +54,18 @@ class Profile extends React.Component {
             onChangeText={(text) => this.props.dispatch(updateAbout(text))}
             value={this.props.user.aboutMe}/>
         </View>
+
+        {/* Settings Button */}
+        <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate("Settings", {user: uri.user})} >
+        <Text>Settings</Text>
+        </TouchableOpacity>
+
+        {/* Logout Button */}
         <TouchableOpacity onPress={ () => this.props.dispatch(logout()) }>
           <Text style={ styles.button }>Logout</Text>
         </TouchableOpacity>
+
+       
       </ScrollView>
     )
   }
