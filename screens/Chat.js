@@ -3,8 +3,11 @@ import styles from '../styles'
 import * as firebase from 'firebase';
 import { sendNotification } from '../redux/actions'
 import { connect } from 'react-redux';
-import { GiftedChat } from 'react-native-gifted-chat'
+import { GiftedChat } from 'react-native-gifted-chat';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { View, Platform } from 'react-native';
 
+console.ignoredYellowBox = ['Setting a timer']
 class Chat extends React.Component {
   state = {
     messages: [],
@@ -34,6 +37,7 @@ class Chat extends React.Component {
 
   render() {
     return (
+      <View style={{flex:1}}>
       <GiftedChat
         messages={this.state.messages}
         onSend={messages => this.onSend(messages)}
@@ -43,6 +47,8 @@ class Chat extends React.Component {
           avatar: this.props.user.photoUrl
         }}
       />
+      {Platform.OS === 'android' ? <KeyboardSpacer /> : null }
+      </View>
     )
   }
 }

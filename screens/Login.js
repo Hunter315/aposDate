@@ -8,7 +8,7 @@ import firebaseConfig from "../config/firebase.js";
 firebase.initializeApp(firebaseConfig);
 
 import { Text, View, Alert, TouchableOpacity } from "react-native";
-// console.disableYellowBox = true; 
+console.disableYellowBox = true; 
 class Login extends React.Component {
   state = {}
   
