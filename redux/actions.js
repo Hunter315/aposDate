@@ -6,6 +6,7 @@ import { RNS3 } from "react-native-aws3";
 import { Alert } from 'react-native';
 import Geohash from 'latlon-geohash';
 import { Location, Permissions } from 'expo';
+import store from '../App.js';
 
 export function login(user) {
   return function(dispatch) {
@@ -16,6 +17,9 @@ export function login(user) {
       aboutMe: " ",
       chats: " ",
       geocode: " ",
+      range: 4,
+      sex: " ",
+      preference: " ",
       images: [user.photoURL],
       notification: false,
       show: false,
@@ -54,7 +58,7 @@ export function logout() {
 
 export function uploadImages(images) {
   return function(dispatch) {
-    ImagePicker.launchImageLibraryAsync({ allowsEditing: false })
+    ImagePicker.launchImageLibraryAsync({ allowsEditing: true })
       .then(function(result) {
         console.log("========MY RESULT=====" + JSON.stringify(result));
       var array = images;
@@ -98,7 +102,7 @@ export function uploadImages(images) {
         console.log("=====RESULT.URI=====" + result.uri);
         console.log("result.uri may be undefined");
       }
-    });
+    }).catch(err => {console.log(err)});
   };
 }
 
@@ -149,12 +153,21 @@ export function getLocation(){
     Permissions.askAsync(Permissions.LOCATION).then(function(result){
       if(result) {
         Location.getCurrentPositionAsync({}).then(function(location){
-          var geocode = Geohash.encode(location.coords.latitude, location.coords.longitude, 4)
+
+          // Put store.getItem of range here
+         
+          if (range){
+          var geocode = Geohash.encode(location.coords.latitude, location.coords.longitude, range)
+          } else {
+            var geocode = 4
+          }
           firebase.database().ref('cards/' + firebase.auth().currentUser.uid).update({geocode: geocode});
           dispatch({ type: 'GET_LOCATION', payload: geocode });
         })
+      } else {
+        console.log("result not true")
       }
-    })
+    });
   }
 }
 
@@ -190,5 +203,28 @@ export function sendNotification(id, name, text){
         });
       }
     });
+  }
+}
+export function updateRange(range){
+  return function(dispatch){
+    //create variable for my range value
+    firebase.database().ref('cards/' + firebase.auth().currentUser.uid).update({ range: range });
+    dispatch({ type: 'UPDATE_RANGE', payload: range });
+   
+    let test = firebase.database().ref('cards/' + firebase.auth().currentUser.uid.range).on("value", function(snapshot) {
+      console.log(snapshot.val());
+    }, function (errorObject) {
+      console.log("The read failed: " + errorObject.code);
+    });
+    console.log(test)
+
+    
+  }
+}
+
+export function changePreference(){
+  return function(dispatch){
+
+  
   }
 }

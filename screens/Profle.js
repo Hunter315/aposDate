@@ -3,7 +3,7 @@ import styles from '../styles'
 import { connect } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { uploadImages, deleteImage, updateAbout, logout } from '../redux/actions';
-import Settings from './Settings.js';
+
 
 import { 
   Text, 
@@ -55,8 +55,8 @@ class Profile extends React.Component {
             value={this.props.user.aboutMe}/>
         </View>
 
-        {/* Settings Button */}
-        <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate("Settings", {user: uri.user})} >
+       {/* Settings Button */}
+         <TouchableOpacity style={styles.button} onPress={() => this.props.navigation.navigate("Settings")} >
         <Text>Settings</Text>
         </TouchableOpacity>
 

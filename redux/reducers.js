@@ -1,6 +1,5 @@
-
-
-export default reducers = (state = {
+const initialState = 
+{
     loggedIn: false,
     cards: [],
     user: {
@@ -10,6 +9,9 @@ export default reducers = (state = {
         aboutMe: '',
         chats: '',
         geocode: '',
+        range: '',
+        sex: '',
+        preference: '', 
         images: [],
         notification:false,
         show: false,
@@ -18,7 +20,10 @@ export default reducers = (state = {
         token: '',
 
     }
-}, action) => {
+}
+
+
+export default reducers = (state = initialState, action) => {
     switch (action.type) {
         case 'LOGIN': {
             //grab entire state, find user item, and update it with action.payload
@@ -41,6 +46,9 @@ export default reducers = (state = {
         }
         case 'ALLOW_NOTIFICATIONS': {
             return {...state, user: {...state.user, token: action.payload } }
+        }
+        case 'UPDATE_RANGE': {
+            return{ ...state, user: {...state.user, range: action.payload}} 
         }
        
     }

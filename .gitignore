@@ -6,6 +6,6 @@ npm-debug.*
 *.key
 *.mobileprovision
 
-todo.md
+
 
 config/*
