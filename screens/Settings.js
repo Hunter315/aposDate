@@ -32,14 +32,14 @@ class Settings extends React.Component {
 
   changePref = preference => {
     this.setState({ preference });
-    let test = preference.find(e => e.selected == true);
-    this.props.dispatch(changePreference(test.label));
+    let data = preference.find(e => e.selected == true);
+    this.props.dispatch(changePreference(data.label));
   };
 
   changeMyGen = gender => {
     this.setState({ gender });
-    let test = gender.find(e => e.selected == true);
-    this.props.dispatch(changeMyGender(test.label));
+    let data = gender.find(e => e.selected == true);
+    this.props.dispatch(changeMyGender(data.label));
   };
 
   testFunc() {
@@ -74,6 +74,7 @@ class Settings extends React.Component {
         <Text>Range: {this.props.user.range}</Text>
 
         <View>
+            <Text>I am:</Text>
           <RadioGroup
             radioButtons={this.state.gender}
             onPress={this.changeMyGen}
@@ -81,6 +82,7 @@ class Settings extends React.Component {
         </View>
 
         <View>
+            <Text>looking for a:</Text>
           <RadioGroup
             radioButtons={this.state.preference}
             onPress={this.changePref}

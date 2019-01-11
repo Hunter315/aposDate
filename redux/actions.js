@@ -152,6 +152,7 @@ export function getCards(geocode) {
       .once("value", snap => {
         var items = [];
         snap.forEach(child => {
+          console.log("this is my child.val()", child.val())
           item = child.val();
           item.id = child.key;
           items.push(item);
@@ -261,7 +262,6 @@ export  function updateRange(range) {
 
 export function changePreference(pref) {
   return function(dispatch) {
-    console.log("pref", pref)
     firebase.database().ref('cards/' + firebase.auth().currentUser.uid).update({preference: pref})
     dispatch({ type: 'CHANGE_PREFERENCE', payload: pref})
   };
@@ -271,5 +271,11 @@ export function changeMyGender(gender){
   return function(dispatch){
     firebase.database().ref('cards/' + firebase.auth().currentUser.uid).update({gender: gender})
     dispatch({ type: 'CHANGE_GENDER', payload: gender})
+  }
+}
+
+export function changeMyAge(age){
+  return function(dispatch){
+
   }
 }
