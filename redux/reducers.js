@@ -10,7 +10,7 @@ const initialState =
         chats: '',
         geocode: '',
         range: '',
-        sex: '',
+        gender: '',
         preference: '', 
         images: [],
         notification:false,
@@ -18,6 +18,7 @@ const initialState =
         report: false,
         swipes: [],
         token: '',
+        age: '',
 
     }
 }
@@ -49,6 +50,9 @@ export default reducers = (state = initialState, action) => {
         }
         case 'UPDATE_RANGE': {
             return{ ...state, user: {...state.user, range: action.payload}} 
+        }
+        case 'CHANGE_PREFERENCE': {
+            return{ ...state, user: {...state.user, preference: action.payload}} 
         }
        
     }
