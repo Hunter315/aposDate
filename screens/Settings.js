@@ -22,7 +22,8 @@ class Settings extends React.Component {
   state = {
     preference: [
       { label: "Male", value: "Male" },
-      { label: "Female", value: "Female" }
+      { label: "Female", value: "Female" },
+      { label: "Both", value: "Both" }
     ],
     gender: [
       { label: "Male", value: "Male" },

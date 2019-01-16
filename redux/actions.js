@@ -144,6 +144,10 @@ export function updateAbout(value) {
 
 export function getCards(geocode) {
   return function(dispatch) {
+   let myPref = firebase.database().ref("cards/" + firebase.auth().currentUser.uid).child('preference');
+
+   console.log(myPref)
+
     firebase
       .database()
       .ref("cards")
@@ -156,6 +160,7 @@ export function getCards(geocode) {
           item = child.val();
           item.id = child.key;
           items.push(item);
+        
         });
         dispatch({ type: "GET_CARDS", payload: items });
       });
