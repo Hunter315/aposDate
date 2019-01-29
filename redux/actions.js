@@ -100,7 +100,7 @@ export function uploadImages(images) {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log("my error", err);
       });
   };
 }
@@ -143,10 +143,19 @@ export function updateAbout(value) {
 }
 
 export function getCards(geocode) {
-  return function(dispatch) {
-   let myPref = firebase.database().ref("cards/" + firebase.auth().currentUser.uid).child('preference');
+  return async function(dispatch) {
+   let myPref = await firebase.database().ref("cards/" + firebase.auth().currentUser.uid).child('preference').on("value", snap => {
+     preference = snap.val()
+     
+   });
 
-   console.log(myPref)
+   let mySex = await firebase.database().ref("cards/" + firebase.auth().currentUser.uid).child("gender").on("value", snap => {
+     sex = snap.val()
+   })
+
+   console.log("myPref", myPref)
+   console.log("mySex", mySex)
+
 
     firebase
       .database()
@@ -157,6 +166,8 @@ export function getCards(geocode) {
         var items = [];
         snap.forEach(child => {
           console.log("this is my child.val()", child.val())
+          //put interest filtering here
+
           item = child.val();
           item.id = child.key;
           items.push(item);
