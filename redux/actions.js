@@ -7,7 +7,7 @@ import { Alert } from "react-native";
 import Geohash from "latlon-geohash";
 import { Location, Permissions } from "expo";
 import store from "../App.js";
-
+console.disableYellowBox = true;
 export function login(user) {
   return function(dispatch) {
     let params = {
@@ -28,7 +28,7 @@ export function login(user) {
         [user.uid]: false
       },
       token: " ",
-      age: " ",
+      age: " "
     };
 
     firebase
@@ -143,38 +143,50 @@ export function updateAbout(value) {
 }
 
 export function getCards(geocode) {
-  return async function(dispatch) {
-   let myPref = await firebase.database().ref("cards/" + firebase.auth().currentUser.uid).child('preference').on("value", snap => {
-     preference = snap.val()
-     
-   });
-
-   let mySex = await firebase.database().ref("cards/" + firebase.auth().currentUser.uid).child("gender").on("value", snap => {
-     sex = snap.val()
-   })
-
-   console.log("myPref", myPref)
-   console.log("mySex", mySex)
-
-
+  return function(dispatch) {
     firebase
       .database()
       .ref("cards")
       .orderByChild("geocode")
       .equalTo(geocode)
-      .once("value", snap => {
-        var items = [];
-        snap.forEach(child => {
-          console.log("this is my child.val()", child.val())
-          //put interest filtering here
+      .on("value", snap => {
+        let items = [];
 
+        snap.forEach(child => {
           item = child.val();
           item.id = child.key;
           items.push(item);
-        
+          //put interest filtering here
         });
-        dispatch({ type: "GET_CARDS", payload: items });
-      });
+        // male wants a male 
+        if (items[0].gender === "Male" && items[0].preference === "Male") {
+          let results = items.filter(card => {
+            return card.gender === "Male" && card.preference === "Male";
+          });
+          dispatch({ type: "GET_CARDS", payload: results });
+        }
+        //male wants female
+        if (items[0].gender === "Male" && items[0].preference === "Female") {
+          let results = items.filter(card => {
+            return card.gender === "Female" && card.preference === "Male";
+          });
+          dispatch({ type: "GET_CARDS", payload: results });
+        }
+        //female wants male
+        if (items[0].gender === "Female" && items[0].preference === "Male") {
+          let results = items.filter(card => {
+            return card.gender === "Male" && card.preference === "Female";
+          });
+          dispatch({ type: "GET_CARDS", payload: results });
+        }
+        //female wants female
+        if (items[0].gender === "Female" && items[0].preference === "Female") {
+          let results = items.filter(card => {
+            return card.gender === "Female" && card.preference === "Female";
+          });
+          dispatch({ type: "GET_CARDS", payload: results });
+        }
+      }); // end firebase query;
   };
 }
 
@@ -250,7 +262,7 @@ export function sendNotification(id, name, text) {
       });
   };
 }
-export  function updateRange(range) {
+export function updateRange(range) {
   return async function(dispatch) {
     //create variable for my range value
     firebase
@@ -261,37 +273,44 @@ export  function updateRange(range) {
 
     let test = await firebase
       .database()
-      .ref("cards/" + firebase.auth().currentUser.uid + "/range").on(
-      "value",
-      snapshot => {
-        snapshot.val();
-        console.log("my snapshot.val()", snapshot.val());
-      },
-      function(errorObject) {
-        console.log("The read failed: " + errorObject.code);
-      }
-    );
-      
-      dispatch(getLocation(range));
-  };//end dispatch
+      .ref("cards/" + firebase.auth().currentUser.uid + "/range")
+      .on(
+        "value",
+        snapshot => {
+          snapshot.val();
+          console.log("my snapshot.val()", snapshot.val());
+        },
+        function(errorObject) {
+          console.log("The read failed: " + errorObject.code);
+        }
+      );
+
+    dispatch(getLocation(range));
+  }; //end dispatch
 }
 
 export function changePreference(pref) {
   return function(dispatch) {
-    firebase.database().ref('cards/' + firebase.auth().currentUser.uid).update({preference: pref})
-    dispatch({ type: 'CHANGE_PREFERENCE', payload: pref})
+    firebase
+      .database()
+      .ref("cards/" + firebase.auth().currentUser.uid)
+      .update({ preference: pref });
+
+    dispatch({ type: "CHANGE_PREFERENCE", payload: pref });
   };
 }
 
-export function changeMyGender(gender){
-  return function(dispatch){
-    firebase.database().ref('cards/' + firebase.auth().currentUser.uid).update({gender: gender})
-    dispatch({ type: 'CHANGE_GENDER', payload: gender})
-  }
+export function changeMyGender(gender) {
+  return function(dispatch) {
+    firebase
+      .database()
+      .ref("cards/" + firebase.auth().currentUser.uid)
+      .update({ gender: gender });
+
+    dispatch({ type: "CHANGE_GENDER", payload: gender });
+  };
 }
 
-export function changeMyAge(age){
-  return function(dispatch){
-
-  }
+export function changeMyAge(age) {
+  return function(dispatch) {};
 }

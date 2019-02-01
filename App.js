@@ -8,7 +8,7 @@ import { createStore, applyMiddleware } from 'redux';
 const middleware = applyMiddleware(thunkMiddleware);
 
 export const store = createStore(reducers, middleware);
-
+console.disableYellowBox = true; 
 export default class App extends React.Component {
   render() {
     return (
