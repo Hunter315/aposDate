@@ -9,4 +9,4 @@ The User is prompted to login with Facebook, and then proceeds to a main screen 
 React Native with Redux state management to connect post-religious users. Auth setup using Firebase with Facebook integration. Backend + DB managed using Firebase Realtime Database, location using latlon-geohash npm package.
 
 ### Project State
-This is a WIP, but is still a great showcase of what I can do with React Native.
+This is a WIP.
